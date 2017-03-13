@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css?family=Rancho');
+@import url('https://fonts.googleapis.com/css?family=Signika+Negative');
+
+body {
+	background-image: url('../images/hpbackground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 20px;
+    text-align: center;
+    line-height: 2;
+}
+
+header {
+	padding: 10px;
+}
+
+h1 {
+	font-family: 'Rancho', cursive;
+	font-size: 72px;
+}
+
+.container {
+	width: 800px;
+	height: 600px;
+	margin-top: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #b8acc5;
+	padding: 10px;
+	border-radius: 5px 5px 5px 5px;
+	opacity: 0.8;
+}
+
+.startScreen {
+	visibility: visible;
+}
+
+#timer {
+	font-size: 24px;
+}
+
+#triviaQandA {
+	visibility: hidden;
+}
+
+.question {
+	padding: 5px;
+	font-weight: bold;
+}
+
+.answerBtn {
+	width: 400px;
+	padding: 10px;
+	margin: auto;
+}
+
+.answerBtn:hover {
+	background-color: #fff;
+	font-size: 24px;
+	border: 2px solid #000;
+}
+
+.answerBtn:active {
+	background-color: purple;
+	color: white;
+}

@@ -4,6 +4,7 @@
 	<title>Harry Potter Trivia</title>
 
 	<!-- Linking stylesheets -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
 
@@ -12,6 +13,27 @@
 	<script type="text/javascript" src="assets/javascript/app.js"></script>
 </head>
 <body>
+	<div class='container'>
+		<header>
+			<h1>Harry Potter Trivia!</h1>
+		</header>
 
+		<div class='startScreen'>
+			<button class='btn btn-primary btn-lg startButton'>Start</button>
+		</div>
+
+		<span id='timer'></span>
+
+		<div id='triviaQandA'>
+			<div id='question' class='question'></div>
+			<div id='choice0' class='answerBtn'></div>
+			<div id='choice1' class='answerBtn'></div>
+			<div id='choice2' class='answerBtn'></div>
+			<div id='choice3' class='answerBtn'></div>
+		</div>
+
+		<div id='answers' class='trivia'>
+		</div>
+	</div>
 </body>
 </html>
