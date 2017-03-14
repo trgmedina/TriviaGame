@@ -1,6 +1,5 @@
 $(document).ready( function() {
 
-	var timer;
 	var questionsAndAnswers = [{
 		question: "What is Hermione's middle name?",
 		choices: ["Anne", "Jean", "Mary", "Kat"], 
