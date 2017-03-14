@@ -33,7 +33,6 @@ $(document).ready( function() {
 
 	var triviaEnd = false;
 	var timeRanOut = false;
-	var userWrong = false;
 	var timerID = null;
 	var questionCounter = 0;
 	var correctAnsCount = 0;
@@ -43,6 +42,7 @@ $(document).ready( function() {
 	var $question = $('#question');
 	var $answerBtn = $('.answerBtn');
 	var $timer = $('#timer');
+	var $results = $('#results');
 
 	//console.log(questionCounter);
 
@@ -88,20 +88,22 @@ $(document).ready( function() {
 		else {
 			showWrongOrUnans();
 		}
+	});
 
-		questionCounter++;
+	$(document).on('click', '.resetBtn', function() {
+		resetTrivia();
+		$('.startScreen').show();
 	});
 
 	function resetTimer() {
 		clearInterval(timerID); 
 
 		var time = 10;
-		
 		timerID = setInterval(timer, 1000); //1000 will run it every 1 second
 
 		function timer() {
 
-  			if (time <= 0) {
+  			if (time <= 0 && questionCounter < 7) {
   				clearInterval(timerID);
     			timeRanOut = true;
     			showWrongOrUnans();
@@ -114,17 +116,19 @@ $(document).ready( function() {
 	}
 
     function displayQuestion() {
-    	$question.show();
-		$answerBtn.show();
-		$timer.show();
-
-    	if (questionCounter < 8) {
+    	if (questionCounter < 7) {
+    		$question.show();
+			$answerBtn.show();
+			$timer.show();
     		$question.text(questionsAndAnswers[questionCounter].question);
+    	}
+    	else {
+    		endTrivia();
     	}
     }
 
     function displayAnswerChoices() {
-    	if (questionCounter < 8) {
+    	if (questionCounter < 7) {
     		for (var i=0; i < 4; i++) {
     			$('#choice' + i).text(questionsAndAnswers[questionCounter].choices[i]);
     		}
@@ -143,6 +147,8 @@ $(document).ready( function() {
     	correctAnsDiv.addClass('h1');
     	correctAnsDiv.text('Hooray! You are correct!');
     	$triviaQandA.append(correctAnsDiv);
+
+    	questionCounter++;
 
     	setTimeout(function() {
     		displayQuestion();
@@ -167,15 +173,20 @@ $(document).ready( function() {
     	wrongAnsDiv.addClass('h1');
 
     	if (timeRanOut === true) {
+    		unansweredCount ++;
     		wrongAnsDiv.text('Time ran out! The answer is ' + 
     			questionsAndAnswers[questionCounter].choices[correctAnsIndex]);
     	}
     	else {
+    		incorrectAnsCount++;
     		wrongAnsDiv.text('Wrong! The correct answer is ' + 
     			questionsAndAnswers[questionCounter].choices[correctAnsIndex]);
     	}
 
     	$triviaQandA.append(wrongAnsDiv);
+
+    	timeRanOut = false;
+    	questionCounter++;
 
     	setTimeout(function() {
     		displayQuestion();
@@ -188,5 +199,41 @@ $(document).ready( function() {
     	}, 1000);
     }
 
+    function endTrivia() {
+    	$triviaQandA.hide();
+    	$question.hide();
+		$answerBtn.hide();
+		$timer.hide();
 
+		var resultsDiv = $('<div>');
+		resultsDiv.addClass('h1');
+		resultsDiv.text("Quiz Over! Here's how you did:");
+
+		var correctAnsDiv = $('<div>');
+		correctAnsDiv.text('Correct Answers: ' + correctAnsCount);
+
+		var incorrectAnsDiv = $('<div>');
+		incorrectAnsDiv.text('Incorrect Answers: ' + incorrectAnsCount);
+
+		var unansDiv = $('<div>');
+		unansDiv.text('Unanswered: ' + unansweredCount);
+
+		$results.append(resultsDiv);
+		$results.append(correctAnsDiv);
+		$results.append(incorrectAnsDiv);
+		$results.append(unansDiv);
+
+		var resetButton = $('<button>').addClass('btn btn-primary btn-lg resetBtn').text('Start Over?');
+		$('#reset').append(resetButton);
+    }
+
+    function resetTrivia() {
+		timeRanOut = false;
+		questionCounter = 0;
+		correctAnsCount = 0;
+		incorrectAnsCount = 0;
+		unansweredCount = 0;
+		$('#reset').empty();
+		$results.empty();
+    }
 });
