@@ -32,39 +32,94 @@ $(document).ready( function() {
 	}];
 
 	var triviaEnd = false;
+	var timeRanOut = false;
+	var userWrong = false;
+	var timerID = null;
 	var questionCounter = 0;
-	var correctAnswerCount = 0;
-	var incorrectAnswerCount = 0;
+	var correctAnsCount = 0;
+	var incorrectAnsCount = 0;
 	var unansweredCount = 0;
+	var $triviaQandA = $('#triviaQandA');
+	var $question = $('#question');
+	var $answerBtn = $('.answerBtn');
+	var $timer = $('#timer');
 
-	console.log(questionCounter);
+	//console.log(questionCounter);
+
+	$triviaQandA.hide();
 
     $(document).on('click', '.startButton', function() {
-    	$('.startScreen').css('visibility', 'hidden');
+    	$('.startScreen').hide();
 
-    	var time = 30;
-		var timerID = setInterval(timer, 1000); //1000 will run it every 1 second
-
-		function timer() {
-  			if (time <= 0) {
-    			clearInterval(time);
-     			return;
-  			}
-
-  			$('#timer').text('Time Remaining: ' + time + ' Seconds');
-  			time = time - 1;
-		}
+    	resetTimer();
 
 		setTimeout (function() {
 			displayQuestion();
 			displayAnswerChoices();
-			$('#triviaQandA').css('visibility', 'visible');
+			$triviaQandA.show();
 		}, 1000);
 	});
 
+	$(document).on('click', '.answerBtn', function(e) {
+
+		var inputId = this.id;
+		var userGuess = 0;
+
+		//console.log(inputId);
+
+		if (inputId === 'choice0') {
+			userGuess = 0;
+		}
+		else if (inputId === 'choice1') {
+			userGuess = 1;
+		}
+		else if (inputId === 'choice2') {
+			userGuess = 2;
+		} 
+		else {
+			userGuess = 3;
+		}
+
+		//console.log(userGuess);
+
+		if (userGuess === questionsAndAnswers[questionCounter].correctAnswer) {
+			showUserCorrect();
+		}
+		else {
+			showWrongOrUnans();
+		}
+
+		questionCounter++;
+	});
+
+	function resetTimer() {
+		clearInterval(timerID); 
+
+		var time = 10;
+		
+		timerID = setInterval(timer, 1000); //1000 will run it every 1 second
+
+		function timer() {
+
+  			if (time <= 0) {
+  				clearInterval(timerID);
+    			timeRanOut = true;
+    			showWrongOrUnans();
+     			return;
+  			}
+
+  			$timer.text('Time Remaining: ' + time + ' Seconds');
+  			time = time - 1;
+		}
+	}
+
     function displayQuestion() {
+    	$question.show();
+		$answerBtn.show();
+		$timer.show();
+
     	if (questionCounter < 8) {
-    		$('#question').text(questionsAndAnswers[questionCounter].question);
+    		$question.text(questionsAndAnswers[questionCounter].question);
     	}
     }
 
@@ -73,7 +128,65 @@ $(document).ready( function() {
     		for (var i=0; i < 4; i++) {
     			$('#choice' + i).text(questionsAndAnswers[questionCounter].choices[i]);
     		}
-    		questionCounter++;
     	}
     }
+
+    function showUserCorrect() {
+    	//console.log('Correct');
+    	$question.hide();
+		$answerBtn.hide();
+		$timer.hide();
+
+    	correctAnsCount++;
+
+    	var correctAnsDiv = $('<div>');
+    	correctAnsDiv.addClass('h1');
+    	correctAnsDiv.text('Hooray! You are correct!');
+    	$triviaQandA.append(correctAnsDiv);
+
+    	setTimeout(function() {
+    		displayQuestion();
+    		displayAnswerChoices(); 
+    		correctAnsDiv.remove();
+    	}, 2000);
+
+    	setTimeout(function() {
+    		resetTimer();
+    	}, 1000);
+    }
+
+    function showWrongOrUnans() {
+    	//console.log('Incorrect')
+    	$question.hide();
+		$answerBtn.hide();
+		$timer.hide();
+
+    	var correctAnsIndex = questionsAndAnswers[questionCounter].correctAnswer;
+
+    	var wrongAnsDiv = $('<div>');
+    	wrongAnsDiv.addClass('h1');
+
+    	if (timeRanOut === true) {
+    		wrongAnsDiv.text('Time ran out! The answer is ' + 
+    			questionsAndAnswers[questionCounter].choices[correctAnsIndex]);
+    	}
+    	else {
+    		wrongAnsDiv.text('Wrong! The correct answer is ' + 
+    			questionsAndAnswers[questionCounter].choices[correctAnsIndex]);
+    	}
+
+    	$triviaQandA.append(wrongAnsDiv);
+
+    	setTimeout(function() {
+    		displayQuestion();
+    		displayAnswerChoices(); 
+    		wrongAnsDiv.remove();
+    	}, 2000);
+
+    	setTimeout(function() {
+    		resetTimer();
+    	}, 1000);
+    }
+
+
 });
